@@ -27,11 +27,11 @@ export default function App() {
 
         const data = await fetchMovies(query);
 
-        if (data.length === 0) {
+        if (data.results.length === 0) {
           toast('No movies found for your request.');
         }
 
-        setMovies(data);
+        setMovies(data.results);
       } catch {
         setError('Failed to fetch movies.');
         toast.error('Failed to fetch movies.');
@@ -51,6 +51,7 @@ export default function App() {
 
     setQuery(newQuery);
     setMovies([]);
+    setError(null);
   };
 
   const handleSelect = (movie: Movie) => {
@@ -65,13 +66,11 @@ export default function App() {
     <div className={styles.app}>
       <Toaster position="top-right" />
       <SearchBar onSubmit={handleSearch} />
-
       {isLoading && <Loader />}
-      {error && <ErrorMessage />}
+      {error && <ErrorMessage message={error} />}{' '}
       {!isLoading && !error && movies.length > 0 && (
         <MovieGrid movies={movies} onSelect={handleSelect} />
       )}
-
       {selectedMovie && (
         <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
       )}
